@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My book shelf</title>
+    <style>
+        #root_container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #books {
+            width: 50%;
+            border-collapse: collapse;
+        }
+
+        table {
+            margin: 25px;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        th, td {
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<div id="root_container">
+    <form method="post" th:action="@{/books/save}" th:object="${book}">
+        <table>
+            <tr>
+                <td>
+                    <input type="text" placeholder="author" th:field="*{author}">
+                    <p th:if="${#fields.hasErrors('author')}">field value must be 2 simvols</p>
+                </td>
+                <td>
+                    <input type="text" placeholder="book_title" th:field="*{title}">
+                    <p th:if="${#fields.hasErrors('title')}">field value must be 2 simvols</p>
+                </td>
+                <td>
+                    <input type="number" placeholder="size (pages)" th:field="*{size}">
+                    <p th:if="${#fields.hasErrors('size')}">field value must be digit and less than 4 signs</p>
+                </td>
+                <td>
+                    <input type="submit" value="save">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <form method="post" th:action="@{/books/remove}" th:object="${bookIdToRemove}">
+        <table>
+            <tr>
+                <td>
+                    <input type="number" placeholder="id number" th:field="*{id}">
+                </td>
+                <td>
+                    <input type="submit" value="remove">
+                </td>
+                <td th:if="${#fields.hasErrors()}">
+                    <p>Wrong id or not found</p>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <form method="post" th:action="@{/books/uploadFile}" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>
+                    <input type="file" name="file"/>
+                </td>
+                <td>
+                    <input type="submit" value="Upload">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+
+
+    <table>
+        <form method="post" th:action="@{/books/selectByRegex}" th:object="${regexBook}">
+
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <input type="text" placeholder="id-regex" th:name="queryIdRegex" th:field="*{id}">
+                </td>
+
+                <td>
+                    <input type="text" placeholder="author-regex" th:name="queryAuthorRegex" th:field="*{author}">
+                </td>
+
+                <td>
+                    <input type="text" placeholder="title-regex" th:name="queryTitleRegex" th:field="*{title}" >
+                </td>
+
+                <td>
+                    <input type="text" placeholder="size-regex" th:name="querySizeRegex" th:field="*{size}">
+                </td>
+
+                <td>
+                    <input type="submit" value="select by regex" method="post" >
+                </td>
+
+
+            </tr>
+
+        </form>
+        <form method="post" th:action="@{/books/deletSelectedBook}" th:object="${bookList}">
+        <tr>
+
+                <input type="submit" value="delete select book" method="post">
+
+        </tr>
+
+        <tr>
+            <th>check</th>
+            <th>id</th>
+            <th>author</th>
+            <th>title</th>
+            <th>size</th>
+        </tr>
+
+
+        <tr th:each="book : ${bookList}" th:object="${bookList}">
+            <!--td> th:object="${book}" th:field="*{book.flag}  <input type="checkbox" th:field="${bookList}" th:value="${book.id}" th:checked="true"> </td-->
+            <td>  <input type="checkbox"  th:checked="${book.flag}" > </td>
+            <td th:text="${book.id}"> </td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.size}"></td>
+        </tr>
+        </form>
+    </table>
+</div>
+</body>
+</html>
